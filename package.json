@@ -8,10 +8,22 @@
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.89.0",
+    "clsx": "^2.1.1",
     "framer-motion": "^11.0.0",
+    "lucide-react": "^0.460.0",
+    "next": "^14.0.0",
     "next-themes": "^0.4.6",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "react-hot-toast": "^2.6.0",
     "react-paystack": "^6.0.0",
-    "resend": "^3.2.0"
+    "resend": "^3.2.0",
+    "tailwind-merge": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "autoprefixer": "^10.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "5.9.3"
   }
 }

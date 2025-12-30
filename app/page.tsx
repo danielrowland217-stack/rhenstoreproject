@@ -18,7 +18,7 @@ const playfair = Playfair_Display({
   weight: ["700"], // Bold
 });
 
-export function CardStackDemo() {
+function CardStackDemo() {
   return (
     <div className="flex items-center justify-center w-full pt-24">
       <CardStack items={CARDS} />

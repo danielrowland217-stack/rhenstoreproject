@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Rhen | Luxury Fashion & Style",
   },
   icons: {
-    apple: "/apple-touch-icon.png",
+    icon: "/favicon.ico",
   },
 };
 

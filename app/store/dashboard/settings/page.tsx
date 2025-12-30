@@ -2,9 +2,13 @@
 
 import { useState, useEffect, useRef, FormEvent, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+
+export const dynamic = 'force-dynamic';
 import { motion } from "framer-motion";
 import { Store, Text, Image as ImageIcon, ArrowLeft, Save } from "lucide-react";
 import { BottomNav } from "@/app/dashboard/BottomNav";
+import { getUser } from "../../../../lib/supabaseClient";
+import { getStoreSettings } from "../../../../lib/supabaseDb";
 
 export default function StoreSettingsPage() {
   const router = useRouter();

@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import nextDynamic from "next/dynamic";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus, Share2, Search, X, Trash2, Star, ShoppingBag, Package, Home, ArrowUp, ChevronLeft, ChevronRight, Camera, CreditCard, Heart, CheckCircle, User as UserIcon, Edit2, Save, Wallet, BarChart3, Megaphone, TrendingUp, Target, FileText, Palette, Check, Crown, Sparkles } from "lucide-react";
 import { BottomNav } from "../../dashboard/BottomNav";
@@ -12,7 +13,6 @@ import { supabase } from "../../../lib/supabaseClient";
 import { User } from "@supabase/supabase-js";
 import { ProductFormModal } from "./ProductFormModal";
 import { usePaystackPayment } from "react-paystack";
-import dynamic from "next/dynamic";
 
 import { Plus_Jakarta_Sans } from "next/font/google";
 const font = Plus_Jakarta_Sans({ subsets: ["latin"] });
@@ -155,7 +155,7 @@ const templates: Template[] = [
   }
 ];
 
-export default function StoreDashboardPage() {
+function DashboardContent() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [storeName, setStoreName] = useState("My Store");
@@ -661,8 +661,8 @@ export default function StoreDashboardPage() {
     const item = lastOrder.items[0];
     const quantityText = item.quantity > 1 ? ` (x${item.quantity})` : '';
     const text = `🧾 Rhen Store Receipt\n\nOrder ID: #${lastOrder.id.slice(-6)}\nItem: ${item.name}${quantityText}\nPrice: ₦${lastOrder.total.toLocaleString()}\nDate: ${new Date(lastOrder.createdAt).toLocaleDateString()}\n\nThank you for your purchase!`;
-    
-    if ((navigator as any).share) {
+
+    if (typeof window !== 'undefined' && (navigator as any).share) {
       try {
         await (navigator as any).share({
           title: 'Rhen Store Receipt',
@@ -671,7 +671,7 @@ export default function StoreDashboardPage() {
       } catch (err) {
         console.log('Error sharing:', err);
       }
-    } else {
+    } else if (typeof window !== 'undefined' && navigator.clipboard) {
       navigator.clipboard.writeText(text);
       toast.success("Receipt copied to clipboard!");
     }
@@ -755,11 +755,15 @@ export default function StoreDashboardPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowBackToTop(window.scrollY > 300);
+      if (typeof window !== 'undefined') {
+        setShowBackToTop(window.scrollY > 300);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
   }, []);
 
   useEffect(() => {
@@ -1959,3 +1963,23 @@ export default function StoreDashboardPage() {
   );
 
 }
+
+const StoreDashboardPage = nextDynamic(() => Promise.resolve(DashboardContent), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="w-10 h-10 border-4 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  )
+});
+
+const StoreDashboardPageComponent = nextDynamic(() => Promise.resolve(StoreDashboardPage), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="w-10 h-10 border-4 border-gray-900 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  )
+});
+
+export default StoreDashboardPageComponent;
